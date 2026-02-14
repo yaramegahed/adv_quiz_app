@@ -1,4 +1,5 @@
 import 'package:adv_quiz_app/core/data/questions_data.dart';
+import 'package:adv_quiz_app/features/results/view/results_view.dart';
 import 'package:flutter/material.dart';
 
 import '../widget/answer_button.dart';
@@ -12,11 +13,23 @@ class QuestionsView extends StatefulWidget {
 
 class _QuestionsViewState extends State<QuestionsView> {
   var currentQuestionIndex = 0;
+  List<String> selectedAnswers = [];
 
-  void answerQuestion() {
-    setState(() {
-      currentQuestionIndex++;
-    });
+  void answerQuestion(String selectedAnswer) {
+    selectedAnswers.add(selectedAnswer);
+    print(selectedAnswer);
+    if (selectedAnswers.length == questionsList.length) {
+      print("@done");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultsView(selectedAnswers: selectedAnswers,),
+          ));
+    } else {
+      setState(() {
+        currentQuestionIndex++;
+      });
+    }
   }
 
   @override
@@ -45,7 +58,7 @@ class _QuestionsViewState extends State<QuestionsView> {
               ...currentQuestion.getShuffledAnswers().map((answer) {
                 return AnswerButton(
                   answerText: answer,
-                  onPressed: answerQuestion,
+                  onPressed: () => answerQuestion(answer),
                 );
               }),
             ],
